@@ -25,7 +25,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun initview() {
          sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE)
-
+        if (sharedPreferences.getBoolean("isLogin", false) == true) {
+            var i = Intent(this, AccountDetailsActivity::class.java)
+            startActivity(i)
+            finish()
+        }
         binding.btncreateaccount.setOnClickListener {
             var email = binding.edtemail.text.toString()
             var name = binding.edtname.text.toString()
