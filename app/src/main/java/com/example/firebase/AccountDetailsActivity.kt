@@ -31,5 +31,7 @@ class AccountDetailsActivity : AppCompatActivity() {
             var i=Intent(this,MainActivity::class.java)
             startActivity(i)
         }
+
+
     }
 }
