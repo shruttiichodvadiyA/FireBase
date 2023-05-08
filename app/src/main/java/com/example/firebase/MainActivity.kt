@@ -1,5 +1,6 @@
 package com.example.firebase
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.firebase.databinding.ActivityMainBinding
 import com.facebook.*
+import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -36,6 +38,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var googleSignInClient: GoogleSignInClient
     lateinit var callbackManager: CallbackManager
     lateinit var sharedPreferences: SharedPreferences
+    var email="email"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -112,12 +115,10 @@ class MainActivity : AppCompatActivity() {
 
 
         // facebook login.................................*****************************
-
-        binding.loginButton.setReadPermissions(Arrays.asList("email", "public_profile"))
+        firebaseAuth = FirebaseAuth.getInstance()
         callbackManager = CallbackManager.Factory.create()
-
-        binding.loginButton.registerCallback(callbackManager,
-            object : FacebookCallback<LoginResult> {
+        binding.loginButton.setReadPermissions(Arrays.asList(email))
+        binding.loginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
                 override fun onCancel() {
 
                 }
@@ -125,38 +126,37 @@ class MainActivity : AppCompatActivity() {
                 override fun onError(error: FacebookException) {
                 }
 
+                @SuppressLint("CommitPrefEdits")
                 override fun onSuccess(result: LoginResult) {
-                    var request = GraphRequest.newMeRequest(result.accessToken,
-                        object : GraphRequest.GraphJSONObjectCallback {
-                            override fun onCompleted(obj: JSONObject?, response: GraphResponse?) {
-                                try {
-                                    var email = obj?.getString("email")
-                                    Log.e("TAG", "onCompleted: " + email + "" + obj)
-                                } catch (e: JSONException) {
 
-                                }
+
+                    Log.e("TAG", "onSuccess:=== "+result.accessToken)
+                    var request = GraphRequest.newMeRequest(result.accessToken, object : GraphRequest.GraphJSONObjectCallback {
+                            override fun onCompleted(obj: JSONObject?, response: GraphResponse?) {
+
+                                    var email = obj?.getString("email")
+
+                                    Log.e("TAG", "onCompleted: " + email + "" + obj)
                             }
                         })
                     val parameters = Bundle()
-                    parameters.putString("fields", "id,name,gender,birthday")
+                    parameters.putString("fields", "email")
                     request.parameters = parameters
                     request.executeAsync()
 
 
-                    val credential: AuthCredential =
-                        FacebookAuthProvider.getCredential(result.accessToken.token)
+                    val credential: AuthCredential = FacebookAuthProvider.getCredential(result.accessToken.token)
                     firebaseAuth = FirebaseAuth.getInstance()
-
                     firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
 
                         if (it.isSuccessful) {
-                            startActivity(
-                                Intent(
-                                    this@MainActivity,
-                                    AccountDetailsActivity::class.java
-                                ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            )
+                            var i=Intent(this@MainActivity,AccountDetailsActivity::class.java)
+                            val myEdit: SharedPreferences.Editor = sharedPreferences.edit()
+                            myEdit.putBoolean("isLogin",true)
+                            myEdit.commit()
+                            startActivity(i)
                             Toast.makeText(this@MainActivity, "firebase Authentecation successful", Toast.LENGTH_SHORT).show()
+
                         }
                     }.addOnFailureListener {
                         Log.e("TAG", "onSuccess: "+it.message)
