@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var googleSignInClient: GoogleSignInClient
     lateinit var callbackManager: CallbackManager
     lateinit var sharedPreferences: SharedPreferences
-    var email="email"
+    var email = "email"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -118,7 +118,9 @@ class MainActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
         callbackManager = CallbackManager.Factory.create()
         binding.loginButton.setReadPermissions(Arrays.asList(email))
-        binding.loginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+        binding.loginButton.registerCallback(
+            callbackManager,
+            object : FacebookCallback<LoginResult> {
                 override fun onCancel() {
 
                 }
@@ -130,13 +132,15 @@ class MainActivity : AppCompatActivity() {
                 override fun onSuccess(result: LoginResult) {
 
 
-                    Log.e("TAG", "onSuccess:=== "+result.accessToken)
-                    var request = GraphRequest.newMeRequest(result.accessToken, object : GraphRequest.GraphJSONObjectCallback {
+                    Log.e("TAG", "onSuccess:=== " + result.accessToken)
+                    var request = GraphRequest.newMeRequest(
+                        result.accessToken,
+                        object : GraphRequest.GraphJSONObjectCallback {
                             override fun onCompleted(obj: JSONObject?, response: GraphResponse?) {
 
-                                    var email = obj?.getString("email")
+                                var email = obj?.getString("email")
 
-                                    Log.e("TAG", "onCompleted: " + email + "" + obj)
+                                Log.e("TAG", "onCompleted: " + email + "" + obj)
                             }
                         })
                     val parameters = Bundle()
@@ -145,22 +149,31 @@ class MainActivity : AppCompatActivity() {
                     request.executeAsync()
 
 
-                    val credential: AuthCredential = FacebookAuthProvider.getCredential(result.accessToken.token)
+                    val credential: AuthCredential =
+                        FacebookAuthProvider.getCredential(result.accessToken.token)
                     firebaseAuth = FirebaseAuth.getInstance()
                     firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
 
                         if (it.isSuccessful) {
-                            var i=Intent(this@MainActivity,AccountDetailsActivity::class.java)
+                            var i = Intent(this@MainActivity, AccountDetailsActivity::class.java)
                             val myEdit: SharedPreferences.Editor = sharedPreferences.edit()
-                            myEdit.putBoolean("isLogin",true)
+                            myEdit.putBoolean("isLogin", true)
                             myEdit.commit()
                             startActivity(i)
-                            Toast.makeText(this@MainActivity, "firebase Authentecation successful", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this@MainActivity,
+                                "firebase Authentecation successful",
+                                Toast.LENGTH_SHORT
+                            ).show()
 
                         }
                     }.addOnFailureListener {
-                        Log.e("TAG", "onSuccess: "+it.message)
-                        Toast.makeText(this@MainActivity, "firebase Authentecation failed", Toast.LENGTH_SHORT).show()
+                        Log.e("TAG", "onSuccess: " + it.message)
+                        Toast.makeText(
+                            this@MainActivity,
+                            "firebase Authentecation failed",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
 
                 }

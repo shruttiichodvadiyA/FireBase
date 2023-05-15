@@ -9,10 +9,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-
 class AccountDetailsActivity : AppCompatActivity() {
     lateinit var binding: ActivityAccountDetailsBinding
-    lateinit var sharedPreferences:SharedPreferences
+    lateinit var sharedPreferences: SharedPreferences
     lateinit var firebaseAuth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,20 +21,19 @@ class AccountDetailsActivity : AppCompatActivity() {
     }
 
     private fun initview() {
-         sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE)
-        binding.txtname.text = sharedPreferences.getString("name","")
-        binding.txtadress.text = sharedPreferences.getString("adress","")
-        binding.txtMobilNumber.text = sharedPreferences.getString("mobileNumber","")
-        binding.txtemail.text = sharedPreferences.getString("email","")
+        sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE)
+        binding.txtname.text = sharedPreferences.getString("name", "")
+        binding.txtadress.text = sharedPreferences.getString("adress", "")
+        binding.txtMobilNumber.text = sharedPreferences.getString("mobileNumber", "")
+        binding.txtemail.text = sharedPreferences.getString("email", "")
 
         binding.btnlogout.setOnClickListener {
-            var myEdit:SharedPreferences.Editor=sharedPreferences.edit()
+            var myEdit: SharedPreferences.Editor = sharedPreferences.edit()
             myEdit.remove("isLogin")
             myEdit.commit()
-            firebaseAuth= Firebase.auth
-            firebaseAuth=FirebaseAuth.getInstance()
-
-            var i=Intent(this,MainActivity::class.java)
+            firebaseAuth = Firebase.auth
+            firebaseAuth = FirebaseAuth.getInstance()
+            var i = Intent(this, MainActivity::class.java)
             startActivity(i)
         }
 
