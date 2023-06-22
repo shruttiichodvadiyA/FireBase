@@ -115,6 +115,7 @@ class MainActivity : AppCompatActivity() {
 
 
         // facebook login.................................*****************************
+
         firebaseAuth = FirebaseAuth.getInstance()
         callbackManager = CallbackManager.Factory.create()
         binding.loginButton.setReadPermissions(Arrays.asList(email))
@@ -178,7 +179,8 @@ class MainActivity : AppCompatActivity() {
 
                 }
 
-            })
+            }
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -240,6 +242,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-
 }

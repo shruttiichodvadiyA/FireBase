@@ -14,7 +14,7 @@ import com.google.firebase.ktx.Firebase
 class LogInActivity : AppCompatActivity() {
     lateinit var binding: ActivityLogInBinding
     private lateinit var auth: FirebaseAuth
-    lateinit var sharedPreferences:SharedPreferences
+    lateinit var sharedPreferences: SharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLogInBinding.inflate(layoutInflater)
@@ -24,19 +24,18 @@ class LogInActivity : AppCompatActivity() {
     }
 
     private fun initview() {
-         sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE)
 
         binding.btnlogin.setOnClickListener {
 
             val email = binding.edtemail.text.toString()
             val password = binding.edtpassword.text.toString()
-            Log.e("TAG", "initview: "+email+""+password )
+            Log.e("TAG", "initview: " + email + "" + password)
             if (email.isEmpty()) {
                 Toast.makeText(this, "please enter a email", Toast.LENGTH_SHORT).show()
             } else if (password.isEmpty()) {
                 Toast.makeText(this, "please enter a password", Toast.LENGTH_SHORT).show()
-            }
-            else {
+            } else {
                 auth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
                     if (it.isSuccessful) {
                         Toast.makeText(this, "succeessfully log in", Toast.LENGTH_SHORT).show()
